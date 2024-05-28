@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { Inventory } from '../schemas/inventory.schema';
 import { CreateInventoryDTO } from '../dtos/create-inventory.dto';
 import { UpdateInventoryDTO } from '../dtos/update-inventory.dto';
-import { ProductsService } from '../products/products.service';
 import { Server } from 'socket.io';
 
 @Injectable()
@@ -15,13 +14,20 @@ export class InventoryService {
   constructor(
     @InjectModel(Inventory.name)
     private readonly inventoryModel: Model<Inventory>,
-    private readonly productsService: ProductsService, // Inject ProductsService
   ) {}
 
+  /**
+   * Set the Socket.IO server instance.
+   * @param server The Socket.IO server instance.
+   */
   setServer(server: Server) {
     this.server = server;
   }
 
+  /**
+   * Retrieve all inventory items.
+   * @returns A promise that resolves to an array of inventory items.
+   */
   async findAll(): Promise<Inventory[]> {
     try {
       return await this.inventoryModel.find().exec();
@@ -31,6 +37,11 @@ export class InventoryService {
     }
   }
 
+  /**
+   * Retrieve a single inventory item by its ID.
+   * @param id The ID of the inventory item.
+   * @returns A promise that resolves to the inventory item.
+   */
   async findOne(id: string): Promise<Inventory> {
     try {
       if (!Types.ObjectId.isValid(id)) {
@@ -43,6 +54,11 @@ export class InventoryService {
     }
   }
 
+  /**
+   * Create a new inventory item.
+   * @param inventory The data transfer object for creating an inventory item.
+   * @returns A promise that resolves to the created inventory item.
+   */
   async create(inventory: CreateInventoryDTO): Promise<Inventory> {
     try {
       const createdInventory = new this.inventoryModel(inventory);
@@ -55,6 +71,12 @@ export class InventoryService {
     }
   }
 
+  /**
+   * Update an existing inventory item.
+   * @param id The ID of the inventory item.
+   * @param inventory The data transfer object for updating an inventory item.
+   * @returns A promise that resolves to the updated inventory item.
+   */
   async update(id: string, inventory: UpdateInventoryDTO): Promise<Inventory> {
     try {
       if (!Types.ObjectId.isValid(id)) {
@@ -79,6 +101,11 @@ export class InventoryService {
     }
   }
 
+  /**
+   * Remove an inventory item by its ID.
+   * @param id The ID of the inventory item.
+   * @returns A promise that resolves to the removed inventory item.
+   */
   async remove(id: string): Promise<Inventory> {
     try {
       if (!Types.ObjectId.isValid(id)) {
@@ -98,6 +125,12 @@ export class InventoryService {
     }
   }
 
+  /**
+   * Add or update the quantity of an inventory item.
+   * @param id The ID of the inventory item.
+   * @param inventory The data transfer object for updating the inventory quantity.
+   * @returns A promise that resolves to the updated inventory item.
+   */
   async addOrUpdateQuantity(
     id: string,
     inventory: UpdateInventoryDTO,
@@ -126,6 +159,11 @@ export class InventoryService {
     }
   }
 
+  /**
+   * Reset the quantity of an inventory item to zero.
+   * @param id The ID of the inventory item.
+   * @returns A promise that resolves to the updated inventory item.
+   */
   async resetQuantity(id: string): Promise<Inventory> {
     try {
       if (!Types.ObjectId.isValid(id)) {
