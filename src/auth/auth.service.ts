@@ -31,6 +31,7 @@ export class AuthService {
       const user = await this.usersService.findByEmail(email);
       if (user && (await bcrypt.compare(pass, user.password))) {
         // Remove the password field from the user object before returning
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...result } = user.toObject();
         return result;
       }

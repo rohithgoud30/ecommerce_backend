@@ -25,13 +25,17 @@ import { ProductsService } from './products.service';
 import { ProductDTO } from '../dtos/product.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+// Tagging this controller with 'products' for Swagger documentation
 @ApiTags('products')
+// Defining the controller and specifying the base route as 'products'
 @Controller('products')
 export class ProductsController {
+  // Injecting the ProductsService to handle product-related business logic
   constructor(
     @Inject(ProductsService) private readonly productsService: ProductsService,
   ) {}
 
+  // API endpoint to get all products
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({
     status: 200,
@@ -50,8 +54,10 @@ export class ProductsController {
   @Get()
   async findAll() {
     try {
+      // Fetching all products from the service
       return await this.productsService.findAll();
     } catch (error) {
+      // Handling errors and throwing an HTTP exception
       throw new HttpException(
         'Failed to retrieve products',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -59,6 +65,7 @@ export class ProductsController {
     }
   }
 
+  // API endpoint to get a product by ID
   @ApiOperation({ summary: 'Get a product by ID' })
   @ApiParam({ name: 'id', description: 'Product ID' })
   @ApiResponse({
@@ -80,6 +87,7 @@ export class ProductsController {
     return await this.productsService.findOne(id);
   }
 
+  // API endpoint to create a new product, protected by JWT authentication
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new product' })
@@ -115,6 +123,7 @@ export class ProductsController {
     return await this.productsService.create(product);
   }
 
+  // API endpoint to update a product by ID, protected by JWT authentication
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a product by ID' })
@@ -151,6 +160,7 @@ export class ProductsController {
     return await this.productsService.update(id, product);
   }
 
+  // API endpoint to delete a product by ID, protected by JWT authentication
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a product by ID' })

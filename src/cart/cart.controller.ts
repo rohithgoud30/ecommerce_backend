@@ -23,10 +23,13 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request as ExpressRequest } from 'express';
 
 @ApiTags('cart')
+// Defining the controller and specifying the base route as 'cart'
 @Controller('cart')
 export class CartController {
+  // Injecting the CartService to handle cart-related operations
   constructor(private readonly cartService: CartService) {}
 
+  // API endpoint to get all carts
   @ApiOperation({ summary: 'Get all carts' })
   @ApiResponse({
     status: 200,
@@ -49,8 +52,10 @@ export class CartController {
   @Get('all')
   async findAll() {
     try {
+      // Fetching all carts from the service
       return await this.cartService.findAll();
     } catch (error) {
+      // Handling errors and throwing an HTTP exception
       throw new HttpException(
         'Failed to retrieve carts',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -58,6 +63,7 @@ export class CartController {
     }
   }
 
+  // API endpoint to get the cart of the authenticated user
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user cart' })
@@ -83,6 +89,7 @@ export class CartController {
       const userId = req.user['_id'];
       return await this.cartService.findOrCreate(userId);
     } catch (error) {
+      // Handling errors and throwing an HTTP exception
       throw new HttpException(
         'Failed to retrieve or create cart',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -90,6 +97,7 @@ export class CartController {
     }
   }
 
+  // API endpoint to update the cart of the authenticated user
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update user cart' })
@@ -143,6 +151,7 @@ export class CartController {
       if (error instanceof HttpException) {
         throw error;
       }
+      // Handling errors and throwing an HTTP exception
       throw new HttpException(
         'Failed to update cart',
         HttpStatus.INTERNAL_SERVER_ERROR,
